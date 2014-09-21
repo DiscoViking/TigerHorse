@@ -27,7 +27,7 @@ func New(source string) (*Controller, error) {
 
 // Adds a person to the database by name.
 func (c *Controller) AddPerson(name string) error {
-	r, err := c.db.Exec("INSERT INTO people (name) VALUES (?)", name)
+	_, err := c.db.Exec("INSERT INTO people (name) VALUES (?)", name)
 
 	return err
 }
@@ -50,7 +50,7 @@ func (c *Controller) AddTransaction(t Transaction) error {
 	r, err := tx.Exec(
 		"INSERT INTO transactions (amount,buyer,guests,time,note)"+
 			"VALUES (?,?,?,?,?)",
-		t.Amount, t.Buyer, t.Guests, t.Time, t.Note)
+		t.Value, t.Buyer, t.Guests, t.Time, t.Note)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (c *Controller) AddTransaction(t Transaction) error {
 
 	// Insert links to beneficiaries.
 	for _, p := range t.Involved {
-		r, err := c.db.Exec("INSERT INTO link VALUES (?,?)", id, id)
+		_, err := c.db.Exec("INSERT INTO link VALUES (?,?)", id, p)
 		if err != nil {
 			return err
 		}
@@ -98,9 +98,9 @@ func (c *Controller) GetTransactions() ([]Transaction, error) {
 			return nil, err
 		}
 
-		txs := append(txs, Transaction{
+		txs = append(txs, Transaction{
 			Id:       id,
-			Amount:   amount,
+			Value:    amount,
 			Buyer:    buyer,
 			Involved: []int64{},
 			Guests:   0,
@@ -154,7 +154,7 @@ func (c *Controller) GetPeople() ([]Person, error) {
 	for rows.Next() {
 		var id int64
 		var name string
-		err := rows.Scan(&id, &string)
+		err := rows.Scan(&id, &name)
 		if err != nil {
 			return nil, err
 		}

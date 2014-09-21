@@ -12,7 +12,7 @@ func (p *Person) Spent(s Storage) (int64, error) {
 	var spent int64 = 0
 	for _, tx := range txs {
 		if tx.Buyer == p.Id {
-			spent += tx.Amount
+			spent += tx.Value
 		}
 	}
 
@@ -36,7 +36,7 @@ func (p *Person) Received(s Storage) (int64, error) {
 		involved := false
 		for _, id := range tx.Involved {
 			if id == p.Id {
-				involved := true
+				involved = true
 				break
 			}
 		}
@@ -45,7 +45,7 @@ func (p *Person) Received(s Storage) (int64, error) {
 		}
 
 		// Total people who benefited from the transaction.
-		n := len(tx.Involved) + tx.Guests
+		n := int64(len(tx.Involved)) + tx.Guests
 
 		// Increase total value.
 		value += tx.Value / n

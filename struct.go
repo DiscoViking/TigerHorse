@@ -9,7 +9,7 @@ import (
 // One monetary transaction.
 type Transaction struct {
 	Id       int64     // Unique identifier.
-	Amount   int64     // Amount spent in pennies.
+	Value    int64     // Amount spent in pennies.
 	Buyer    int64     // Id of the person who paid.
 	Involved []int64   // Ids of all people who shared in this transaction.
 	Guests   int64     // Number of non-spreadsheet people who partook.
