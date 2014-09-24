@@ -3,7 +3,9 @@ package main
 
 type Storage interface {
 	AddPerson(name string) error
-	AddTransaction(t Transaction) error
-	GetTransactions() ([]Transaction, error)
-	GetPeople() ([]Person, error)
+	AddTransaction(t *Transaction) error
+	GetTransactions() ([]*Transaction, error)
+	GetPeople() ([]*Person, error)
+	Init() error
+	Clear() error
 }
