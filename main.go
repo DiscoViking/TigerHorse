@@ -10,6 +10,6 @@ func main() {
 	}
 
 	log.Print("Starting JSON API Server...")
-	StartJSON(s)
+	Serve(s)
 	return
 }

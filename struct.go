@@ -18,6 +18,7 @@ type Transaction struct {
 }
 
 type Person struct {
-	Id   int64  // Unique identifier.
-	Name string // Name of person.
+	Id      int64  // Unique identifier.
+	Name    string // Name of person.
+	Balance int64  // Balance in pennies.
 }

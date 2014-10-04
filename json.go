@@ -9,27 +9,25 @@ import (
 
 // JSON API for tigerhorse.
 
-func StartJSON(s Storage) {
-	http.HandleFunc("/people", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
-			http.Error(w, msg, 400)
-			return
-		}
+func ServePeopleJSON(w http.ResponseWriter, people []*Person) {
+	data, err := json.Marshal(struct{ People []*Person }{people})
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), 503)
+		return
+	}
+	fmt.Fprint(w, string(data))
+	return
+}
 
-		people, err := s.GetPeople()
-		if err != nil {
-			log.Print(err)
-			return
-		}
-
-		data, err := json.Marshal(struct{ People []*Person }{people})
-		if err != nil {
-			log.Print(err)
-			return
-		}
-		fmt.Fprint(w, string(data))
-	})
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+func ServePersonJSON(w http.ResponseWriter, p *Person) {
+	// TODO: Return all transaction data.
+	data, err := json.Marshal(struct{ Person *Person }{p})
+	if err != nil {
+		log.Print(err)
+		http.Error(w, err.Error(), 503)
+		return
+	}
+	fmt.Fprint(w, string(data))
+	return
 }

@@ -1,0 +1,15 @@
+.list-group > a.credit {
+  color: #CCFFCC;
+  background-color: #33AA33;
+}
+.list-group > a.credit:hover {
+  background-color: #44BB44;
+}
+
+.list-group > a.debt {
+  color: #FFCCCC;
+  background-color: #AA3333;
+}
+.list-group > a.debt:hover {
+  background-color: #BB4444;
+}

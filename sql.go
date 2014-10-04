@@ -265,7 +265,20 @@ func (c *Controller) GetPeople() ([]*Person, error) {
 			return nil, err
 		}
 
-		people = append(people, &Person{id, name})
+		person := &Person{id, name, 0}
+		rec, err := person.Received(c)
+		if err != nil {
+			return nil, err
+		}
+
+		spent, err := person.Spent(c)
+		if err != nil {
+			return nil, err
+		}
+
+		person.Balance = rec - spent
+
+		people = append(people, person)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
