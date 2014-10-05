@@ -29,7 +29,7 @@ func (s *dummyStorage) AddPerson(name string) error {
 	}
 
 	// Add the person.
-	s.people = append(s.people, &Person{s.pId, name})
+	s.people = append(s.people, &Person{s.pId, name, 0})
 
 	// Increment person Id ready for next.
 	s.pId++

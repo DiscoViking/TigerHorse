@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"strings"
 	"text/template"
 )
 
@@ -43,8 +44,47 @@ func Serve(s Storage) {
 				}
 			}
 
+			if p == nil {
+				// Didn't find anyone.
+				return
+			}
+
 			// Return their data.
-			ServePersonJSON(w, p)
+			//ServePersonJSON(w, p)
+			txs, err := p.Transactions(s)
+			if err != nil {
+				log.Print(err)
+				return
+			}
+
+			// Hack with the transactions so the ones we didn't buy show the right value.
+			// TODO: Do this properly.
+			for _, tx := range txs {
+				if tx.Buyer != p.Id {
+					tx.Value = -(tx.Value / (int64(len(tx.Involved)) + tx.Guests))
+				}
+			}
+
+			// Switch on accepted content types.
+			accepts := r.Header["Accept"]
+
+			// Html if unspecified.
+			var contentType string
+			if len(accepts) == 0 {
+				contentType = "text/html"
+			} else {
+				contentTypes := strings.Split(accepts[0], ",")
+				contentType = contentTypes[0]
+			}
+
+			log.Printf("Serving content-type: %s", contentType)
+
+			switch contentType {
+			case "text/html":
+				ServePersonHtml(w, p, txs)
+			case "text/json":
+				ServePersonJSON(w, p, txs)
+			}
 		}
 		fmt.Fprint(w, string(data))
 		return

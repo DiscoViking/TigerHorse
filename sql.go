@@ -276,7 +276,7 @@ func (c *Controller) GetPeople() ([]*Person, error) {
 			return nil, err
 		}
 
-		person.Balance = rec - spent
+		person.Balance = spent - rec
 
 		people = append(people, person)
 	}

@@ -20,9 +20,12 @@ func ServePeopleJSON(w http.ResponseWriter, people []*Person) {
 	return
 }
 
-func ServePersonJSON(w http.ResponseWriter, p *Person) {
+func ServePersonJSON(w http.ResponseWriter, p *Person, txs []*Transaction) {
 	// TODO: Return all transaction data.
-	data, err := json.Marshal(struct{ Person *Person }{p})
+	data, err := json.Marshal(struct {
+		Person       *Person
+		Transactions []*Transaction
+	}{p, txs})
 	if err != nil {
 		log.Print(err)
 		http.Error(w, err.Error(), 503)

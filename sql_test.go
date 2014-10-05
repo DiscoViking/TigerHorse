@@ -61,7 +61,7 @@ func TestPeople(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	checkPeople(t, c, []*Person{{1, "ryan"}})
+	checkPeople(t, c, []*Person{{1, "ryan", 0}})
 
 	// Add another person.
 	t.Log("Add another person")
@@ -69,7 +69,7 @@ func TestPeople(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	checkPeople(t, c, []*Person{{2, "fiona"}, {1, "ryan"}})
+	checkPeople(t, c, []*Person{{2, "fiona", 0}, {1, "ryan", 0}})
 
 	// Check duplicate names not allowed.
 	t.Log("Attempt to add duplicate")
@@ -77,7 +77,7 @@ func TestPeople(t *testing.T) {
 	if err == nil {
 		t.Error("Didn't error whilst attempting to add duplicate person")
 	}
-	checkPeople(t, c, []*Person{{2, "fiona"}, {1, "ryan"}})
+	checkPeople(t, c, []*Person{{2, "fiona", 0}, {1, "ryan", 0}})
 }
 
 // Test adding a basic transaction.

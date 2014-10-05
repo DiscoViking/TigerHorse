@@ -9,7 +9,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Print("Starting JSON API Server...")
+	log.Print("Starting TigerHorse Server...")
 	Serve(s)
 	return
 }

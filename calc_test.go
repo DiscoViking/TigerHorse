@@ -29,8 +29,8 @@ func TestSpent(t *testing.T) {
 	s.AddTransaction(tx)
 
 	// Check the Spent value is correct.
-	ryan := &Person{1, "ryan"}
-	fiona := &Person{2, "fiona"}
+	ryan := &Person{1, "ryan", 0}
+	fiona := &Person{2, "fiona", 0}
 
 	if got, _ := ryan.Spent(s); got != 350 {
 		t.Errorf("Ryan spent %v but we calculated %v!\n", 350, got)
@@ -62,8 +62,8 @@ func TestReceived(t *testing.T) {
 	s.AddTransaction(tx)
 
 	// Check the received value is correct.
-	ryan := &Person{1, "ryan"}
-	fiona := &Person{2, "fiona"}
+	ryan := &Person{1, "ryan", 0}
+	fiona := &Person{2, "fiona", 0}
 
 	if got, _ := ryan.Received(s); got != 50 {
 		t.Errorf("Ryan received %v but we calculated %v!\n", 50, got)

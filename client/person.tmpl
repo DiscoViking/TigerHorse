@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{with .Person}}
+    <title>Tigerhorse - {{.Name}}</title>
+    {{end}}
+
+    <!-- Bootstrap -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="/vendor/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container theme-showcase" role="main">
+
+      <!-- Big title section -->
+      <div class="jumbotron">
+        <div class="row">
+          <div class="col-md-6">
+            <h1>Tigerhorse</h1>
+{{with .Person}}
+            <p>{{.Name}} - {{.Balance}}</p>
+{{end}}
+            <p><a href="/transaction/" class="btn btn-primary btn-lg" role="button">Add Transaction</a></p>
+          </div>
+          <div class="col-md-6">
+            <a href="/">
+              <img src="/data/tigerhorse.png" class="img-responsive" alt="Tigerhorse">
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- List of transactions this person was involved with -->
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Note</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+{{range .Transactions}}
+            <tr>
+              <td>{{.Time}}</td>
+              <td>{{.Note}}</td>
+              <td>{{.Value}}</td>
+            </tr>
+{{end}}
+          </tbody>
+        </table>
+      </div><!-- /.col-md-12-->
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>

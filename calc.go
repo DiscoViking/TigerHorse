@@ -2,6 +2,33 @@ package main
 
 // Gets data and performs calculations.
 
+// Gets only the transactions of the given person.
+func (p *Person) Transactions(s Storage) ([]*Transaction, error) {
+	txs := []*Transaction{}
+	allTxs, err := s.GetTransactions()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, tx := range allTxs {
+		involved := false
+		if tx.Buyer == p.Id {
+			involved = true
+		}
+		for _, id := range tx.Involved {
+			if id == p.Id {
+				involved = true
+				break
+			}
+		}
+		if involved {
+			txs = append(txs, tx)
+		}
+	}
+
+	return txs, nil
+}
+
 // Returns total money spent in pennies by person.
 func (p *Person) Spent(s Storage) (int64, error) {
 	txs, err := s.GetTransactions()
