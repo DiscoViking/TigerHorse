@@ -10,7 +10,7 @@
     <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
     <link href="/vendor/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
+    <link href="/css/custom.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -38,7 +38,7 @@
       </div>
 
       <div class="col-md-12">
-        <form role="form">
+        <form role="form" id="txform">
 
           <div class="form-group">
             <label for="inputDescription">Description</label>
@@ -46,8 +46,8 @@
           </div>
 
           <div class="form-group">
-            <label for="inputDescription">Amount (£)</label>
-            <input type="number" class="form-control" id="inputAmount" placeholder="e.g. 10.99">
+            <label for="inputAmount">Amount (£)</label>
+            <input type="text" class="form-control" id="inputAmount" placeholder="e.g. 10.99">
           </div>
 
           <div class="form-group">
@@ -63,7 +63,7 @@
             <label>Who benefitted?</label>
             <div class=row>
               {{range .}}
-              <div class="col-md-3 col-xs-6"><div class="checkbox"><label><input type="checkbox">{{.Name}}</label></div></div>
+              <div class="col-md-3 col-xs-6"><div class="checkbox"><label><input id="benefitted" type="checkbox" value="{{.Name}}">{{.Name}}</label></div></div>
               {{end}}
             </div>
           </div>
@@ -73,7 +73,7 @@
             <input type="number" class="form-control" id="inputGuests" placeholder="e.g. 2">
           </div>
 
-          <p><button type="submit" class="btn btn-default">Submit</button></p>
+          <p><button id="send" class="btn btn-default">Submit</button></p>
 
         </form>
       </div>
@@ -83,5 +83,28 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Inline script to submit data -->
+    <script type="text/javascript">
+      people = new Array()
+      {{range .}}
+        people["{{.Name}}"] = {{.Id}};
+      {{end}}
+
+      $("#send").click(function(){
+          tx = {};
+          tx.Id = 0;
+          tx.Value = parseFloat($("#inputAmount").val());
+          tx.Buyer = people[$("#inputBuyer").val()];
+          tx.Involved = new Array();
+          $.each($("input[id='benefitted']:checked"), function() {
+            tx.Involved.push(people[$(this).val()]);
+            });
+          tx.Guests = parseInt($("#inputGuests").val(),10);
+          tx.Note = $("#inputDescription").val();
+
+          $.post(document.URL, JSON.stringify(tx));
+          });
+    </script>
   </body>
 </html>

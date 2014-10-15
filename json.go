@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -21,7 +22,6 @@ func ServePeopleJSON(w http.ResponseWriter, people []*Person) {
 }
 
 func ServePersonJSON(w http.ResponseWriter, p *Person, txs []*Transaction) {
-	// TODO: Return all transaction data.
 	data, err := json.Marshal(struct {
 		Person       *Person
 		Transactions []*Transaction
@@ -33,4 +33,22 @@ func ServePersonJSON(w http.ResponseWriter, p *Person, txs []*Transaction) {
 	}
 	fmt.Fprint(w, string(data))
 	return
+}
+
+func PostNewTransaction(s Storage, r *http.Request) error {
+	var tx Transaction
+	d := json.NewDecoder(r.Body)
+	err := d.Decode(&tx)
+
+	if err != nil {
+		return errors.New("Failed to parse JSON body.")
+	}
+
+	err = s.AddTransaction(&tx)
+
+	if err != nil {
+		return errors.New("Error adding transaction to database.")
+	}
+
+	return nil
 }

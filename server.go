@@ -113,24 +113,33 @@ func Serve(s Storage) {
 	})
 
 	http.HandleFunc("/transaction/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
+		switch r.Method {
+		case "GET":
+			people, err := s.GetPeople()
+			if err != nil {
+				log.Print(err)
+				return
+			}
+
+			t, err := template.ParseFiles("client/transaction.tmpl")
+			if err != nil {
+				log.Print(err)
+				http.Error(w, err.Error(), 503)
+			}
+			t.Execute(w, people)
+
+		case "POST":
+			fmt.Print("Received transaction POST request")
+			err := PostNewTransaction(s, r)
+			if err != nil {
+				http.Error(w, err.Error(), 503)
+			}
+
+		default:
 			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
 			http.Error(w, msg, 400)
-			return
 		}
 
-		people, err := s.GetPeople()
-		if err != nil {
-			log.Print(err)
-			return
-		}
-
-		t, err := template.ParseFiles("client/transaction.tmpl")
-		if err != nil {
-			log.Print(err)
-			http.Error(w, err.Error(), 503)
-		}
-		t.Execute(w, people)
 	})
 
 	// Serve vendor files.
