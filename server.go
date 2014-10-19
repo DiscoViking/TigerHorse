@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"path"
 	"strings"
-	"text/template"
 )
 
 func Serve(s Storage) {
@@ -104,11 +104,12 @@ func Serve(s Storage) {
 			return
 		}
 
-		t, err := template.ParseFiles("client/main.tmpl")
-		if err != nil {
-			log.Print(err)
-			http.Error(w, err.Error(), 503)
+		funcs := template.FuncMap{
+			"pounds": penniesToPounds,
 		}
+
+		t := template.Must(template.New("main.tmpl").Funcs(funcs).ParseFiles("client/main.tmpl"))
+
 		t.Execute(w, people)
 	})
 
@@ -132,6 +133,7 @@ func Serve(s Storage) {
 			fmt.Print("Received transaction POST request")
 			err := PostNewTransaction(s, r)
 			if err != nil {
+				fmt.Print("Error adding transaction: ", err.Error())
 				http.Error(w, err.Error(), 503)
 			}
 

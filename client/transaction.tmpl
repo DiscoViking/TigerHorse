@@ -94,7 +94,7 @@
       $("#send").click(function(){
           tx = {};
           tx.Id = 0;
-          tx.Value = parseFloat($("#inputAmount").val());
+          tx.Value = Math.floor(100 * parseFloat($("#inputAmount").val()));
           tx.Buyer = people[$("#inputBuyer").val()];
           tx.Involved = new Array();
           $.each($("input[id='benefitted']:checked"), function() {

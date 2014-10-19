@@ -2,6 +2,11 @@ package main
 
 // Gets data and performs calculations.
 
+// Converts pennies to pounds.
+func penniesToPounds(p int64) float64 {
+	return float64(p) / 100
+}
+
 // Gets only the transactions of the given person.
 func (p *Person) Transactions(s Storage) ([]*Transaction, error) {
 	txs := []*Transaction{}

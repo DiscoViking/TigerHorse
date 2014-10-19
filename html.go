@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
+	"html/template"
 	"net/http"
-	"text/template"
 )
 
 // Functions for serving HTML content.
@@ -12,11 +11,11 @@ func ServePeopleHtml(w http.ResponseWriter, people []*Person) {
 }
 
 func ServePersonHtml(w http.ResponseWriter, person *Person, txs []*Transaction) {
-	t, err := template.ParseFiles("client/person.tmpl")
-	if err != nil {
-		log.Print(err)
-		http.Error(w, err.Error(), 503)
+	funcs := template.FuncMap{
+		"pounds": penniesToPounds,
 	}
+
+	t := template.Must(template.New("person.tmpl").Funcs(funcs).ParseFiles("client/person.tmpl"))
 
 	t.Execute(w, struct {
 		Person       *Person
