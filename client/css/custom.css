@@ -13,3 +13,11 @@
 .list-group > a.debt:hover {
   background-color: #BB4444;
 }
+
+.list-group > a.neutral {
+  color: #DDDDDD;
+  background-color: #AAAAAA;
+}
+.list-group > a.neutral:hover {
+  background-color: #BBBBBB;
+}

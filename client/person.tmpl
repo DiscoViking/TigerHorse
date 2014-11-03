@@ -30,7 +30,7 @@
           <div class="col-md-6">
             <h1>Tigerhorse</h1>
 {{with .Person}}
-            <p>{{.Name}} - {{.Balance}}</p>
+            <p>{{.Name}} - {{pounds .Balance}}</p>
 {{end}}
             <p><a href="/transaction/" class="btn btn-primary btn-lg" role="button">Add Transaction</a></p>
           </div>
@@ -44,24 +44,26 @@
 
       <!-- List of transactions this person was involved with -->
       <div class="col-md-12">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Note</th>
-              <th>Amount</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Note</th>
+                <th>Amount (£)</th>
+              </tr>
+            </thead>
+            <tbody>
 {{range .Transactions}}
-            <tr>
-              <td>{{.Time}}</td>
-              <td>{{.Note}}</td>
-              <td>{{.Value}}</td>
-            </tr>
+              <tr class="{{if gt .Value 0}}success{{else if lt .Value 0}}danger{{end}}">
+                <td>{{.Time}}</td>
+                <td>{{.Note}}</td>
+                <td>{{pounds .Value}}</td>
+              </tr>
 {{end}}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div><!-- /.col-md-12-->
     </div>
 
