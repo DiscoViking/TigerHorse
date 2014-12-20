@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 // JSON API for tigerhorse.
@@ -43,6 +44,9 @@ func PostNewTransaction(s Storage, r *http.Request) error {
 	if err != nil {
 		return errors.New("Failed to parse JSON body.")
 	}
+
+	// Stamp with current time.
+	tx.Time = time.Now()
 
 	err = s.AddTransaction(&tx)
 
