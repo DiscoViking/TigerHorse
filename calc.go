@@ -55,14 +55,14 @@ func (p *Person) Spent(s Storage) (int64, error) {
 // To calculate this, we take every transaction the person benefited from,
 // divide the value of the transaction by how many people took part in it,
 // and sum these individual values.
-// Return value is in pennies.
+// Return value is in pennies (rounded).
 func (p *Person) Received(s Storage) (int64, error) {
 	txs, err := s.GetTransactions()
 	if err != nil {
 		return 0, err
 	}
 
-	var value int64 = 0
+	var value float64 = 0
 	for _, tx := range txs {
 		// Work out if we gained value from the transaction.
 		involved := false
@@ -80,8 +80,8 @@ func (p *Person) Received(s Storage) (int64, error) {
 		n := int64(len(tx.Involved)) + tx.Guests
 
 		// Increase total value.
-		value += tx.Value / n
+		value += float64(tx.Value) / float64(n)
 	}
 
-	return value, nil
+	return int64(value), nil
 }
