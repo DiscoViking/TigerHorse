@@ -10,7 +10,27 @@ import (
 )
 
 func Serve(s Storage) {
-	http.HandleFunc("/people/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/people/", basicAuth(servePeople(s)))
+
+	// Handle non-API pages.
+	http.HandleFunc("/", basicAuth(serveHome(s)))
+
+	http.HandleFunc("/transaction/", basicAuth(serveTransaction(s)))
+
+	// Serve vendor files.
+	http.HandleFunc("/vendor/", basicAuth(serveClientFile(s)))
+
+	// Serve data files.
+	http.HandleFunc("/data/", basicAuth(serveClientFile(s)))
+
+	// Serve custom css.
+	http.HandleFunc("/css/", basicAuth(serveClientFile(s)))
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func servePeople(s Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var data []byte
 		var err error
 
@@ -88,10 +108,11 @@ func Serve(s Storage) {
 		}
 		fmt.Fprint(w, string(data))
 		return
-	})
+	}
+}
 
-	// Handle non-API pages.
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+func serveHome(s Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
 			http.Error(w, msg, 400)
@@ -111,9 +132,11 @@ func Serve(s Storage) {
 		t := template.Must(template.New("main.tmpl").Funcs(funcs).ParseFiles("client/main.tmpl"))
 
 		t.Execute(w, people)
-	})
+	}
+}
 
-	http.HandleFunc("/transaction/", func(w http.ResponseWriter, r *http.Request) {
+func serveTransaction(s Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
 			people, err := s.GetPeople()
@@ -141,11 +164,11 @@ func Serve(s Storage) {
 			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
 			http.Error(w, msg, 400)
 		}
+	}
+}
 
-	})
-
-	// Serve vendor files.
-	http.HandleFunc("/vendor/", func(w http.ResponseWriter, r *http.Request) {
+func serveClientFile(s Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
 			http.Error(w, msg, 400)
@@ -153,29 +176,5 @@ func Serve(s Storage) {
 		}
 
 		http.ServeFile(w, r, "client/"+r.URL.Path)
-	})
-
-	// Serve data files.
-	http.HandleFunc("/data/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
-			http.Error(w, msg, 400)
-			return
-		}
-
-		http.ServeFile(w, r, "client/"+r.URL.Path)
-	})
-
-	// Serve custom css.
-	http.HandleFunc("/css/", func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "GET" {
-			msg := fmt.Sprintf("Cannot %v to this resource.", r.Method)
-			http.Error(w, msg, 400)
-			return
-		}
-
-		http.ServeFile(w, r, "client/"+r.URL.Path)
-	})
-
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	}
 }
