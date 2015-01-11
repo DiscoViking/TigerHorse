@@ -1,9 +1,21 @@
 package main
 
 import (
+	"bufio"
 	"encoding/base64"
+	"log"
 	"net/http"
+	"os"
 	"strings"
+)
+
+const (
+	authFile = ".auth"
+)
+
+var (
+	username string
+	password string
 )
 
 func basicAuth(pass http.HandlerFunc) http.HandlerFunc {
@@ -35,9 +47,36 @@ func basicAuth(pass http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func validate(username, password string) bool {
-	if username == "username" && password == "password" {
+func validate(u, p string) bool {
+	if u == username && p == password {
 		return true
 	}
 	return false
+}
+
+func loadLoginDetails() error {
+	f, err := os.Open(authFile)
+	if err != nil {
+		return err
+	}
+
+	s := bufio.NewScanner(f)
+
+	// Read username from first line.
+	if !s.Scan() {
+		return s.Err()
+	}
+
+	username = s.Text()
+
+	// Read password from second line.
+	if !s.Scan() {
+		return s.Err()
+	}
+
+	password = s.Text()
+
+	log.Printf("Username: %v, Password: %v\n", username, password)
+
+	return nil
 }

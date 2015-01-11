@@ -16,6 +16,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Print("Loading authentication details...")
+	err = loadLoginDetails()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Print("Starting TigerHorse Server...")
 	Serve(s)
 	return
